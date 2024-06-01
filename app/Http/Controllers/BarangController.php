@@ -99,8 +99,27 @@ class BarangController extends Controller
 
     // Menghapus barang
     public function destroy($id)
-    {
-        // Barang::whereId($id)->delete();
-        return redirect()->route('barangs.index');
+{
+    // Mendapatkan token dari session
+    $token = session('api_token');
+
+    // Kirim permintaan ke API untuk menghapus barang
+    $response = Http::withHeaders([
+        'Authorization' => 'Bearer ' . $token,
+    ])->delete('http://localhost:8001/api/barangs/' . $id);
+
+    // Periksa apakah permintaan berhasil
+    if ($response->successful()) {
+        // Alihkan ke halaman index jika berhasil
+        return redirect()->route('barangs.index')->with('success', 'Barang berhasil dihapus.');
+    } else {
+        // Ambil pesan error dari respons API jika ada
+        $error_message = $response->json()['error'] ?? 'Gagal menghapus barang. Silakan coba lagi.';
+
+        // Kembalikan dengan pesan error
+        return redirect()->route('barangs.index')->withErrors([
+            'error' => $error_message,
+        ]);
     }
+}
 }
