@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Barang</title>
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    <script>
+        function confirmDelete(event) {
+            event.preventDefault(); // Mencegah pengiriman form langsung
+            var confirmation = confirm('Apakah Anda yakin ingin menghapus barang ini?');
+            if (confirmation) {
+                event.target.submit(); // Kirim form jika konfirmasi diterima
+            }
+        }
+    </script>
 </head>
 <body>
 <h1>Daftar Barang</h1>
@@ -30,7 +39,7 @@
                 <td>
                     <a href="{{ route('barangs.show', $barang['id']) }}">Lihat</a>
                     <a href="{{ route('barangs.edit', $barang['id']) }}">Edit</a>
-                    <form action="{{ route('barangs.destroy', $barang['id']) }}" method="POST">
+                    <form action="{{ route('barangs.destroy', $barang['id']) }}" method="POST" onsubmit="confirmDelete(event)">
                         @csrf
                         @method('DELETE')
                         <button type="submit">Hapus</button>
@@ -42,6 +51,5 @@
     @else
         <p>Tidak ada data barang yang tersedia.</p>
     @endif
-   
 </body>
 </html>
