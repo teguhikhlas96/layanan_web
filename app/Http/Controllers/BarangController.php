@@ -65,8 +65,15 @@ class BarangController extends Controller
     // Menampilkan detail barang
     public function show($id)
     {
-        // $barang = Barang::findOrFail($id);
-        return view('barangs.show', compact('barang'));
+        // Mengambil data barang dari API eksternal
+        $response = Http::get('http://localhost:8001/api/barangs/'.$id);
+        if ($response->successful()) {
+            $barang = $response->json();
+            return view('barangs.show', compact('barang'));
+        } else {
+            return view('barangs.show')->with('error', 'Gagal mengambil data barang dari API.');
+        }
+   
     }
 
     // Menampilkan form untuk mengedit barang
